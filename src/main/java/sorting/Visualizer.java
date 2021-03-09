@@ -126,7 +126,6 @@ public class Visualizer extends JFrame implements ActionListener {
     }
 
     private void createRandomArray(int arrayLength) {
-        //frame.removeAll();
         arrayNumbers = new int[arrayLength];
         buttons = new ArrayList<>();
         int x = 100;
