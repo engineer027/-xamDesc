@@ -1,16 +1,11 @@
 package sorting;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 public class Visualizer extends JFrame implements ActionListener {
@@ -23,7 +18,7 @@ public class Visualizer extends JFrame implements ActionListener {
     private JTextField textArrayLength;
     private JTextField textSpeedSort;
     private int[] arrayNumbers;
-    private List<JLabel> labels;
+    private List<JButton> buttons;
     private int speedSort;
     private Thread thread;
 
@@ -81,15 +76,7 @@ public class Visualizer extends JFrame implements ActionListener {
                     throw new RuntimeException();
                 }
                 setVisible(false);
-                frame = new JFrame();
-                frame.setSize(1500,800);
-                frame.setLayout(null);
-                frame.setVisible(true);
-                frame.add(sort);
-                frame.add(reset);
-                frame.add(textSpeedSort);
-                frame.add(labelSpeedSort);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                createFrame();
                 createRandomArray(arrayLength);
             } catch (RuntimeException exception) {
                 JOptionPane.showMessageDialog(Visualizer.this,"Please enter the correct value!");
@@ -101,9 +88,9 @@ public class Visualizer extends JFrame implements ActionListener {
                 if (speedSort > 30 || speedSort <= 0) {
                     throw new RuntimeException();
                 }
-                for (JLabel label: labels) {
-                    label.setBackground(Color.GREEN);
-                    label.setForeground(Color.white);
+                for (JButton button: buttons) {
+                    button.setBackground(Color.GREEN);
+                    button.setForeground(Color.white);
                 }
                 thread = new Thread() {
                     @Override
@@ -126,24 +113,54 @@ public class Visualizer extends JFrame implements ActionListener {
         }
     }
 
-    private int[] createRandomArray(int arrayLength) {
+    private void createFrame() {
+        frame = new JFrame();
+        frame.setSize(1500,800);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.add(sort);
+        frame.add(reset);
+        frame.add(textSpeedSort);
+        frame.add(labelSpeedSort);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void createRandomArray(int arrayLength) {
+        //frame.removeAll();
         arrayNumbers = new int[arrayLength];
-        labels = new ArrayList<>();
+        buttons = new ArrayList<>();
         int x = 100;
         for (int i = 0; i < arrayLength; i++) {
             if (i % 10 == 0) {
                 x = x + 120;
             }
             arrayNumbers[i] = (int) (Math.random() * 1000);
-            JLabel label = new JLabel(arrayNumbers[i] + "", SwingConstants.CENTER);
-            label.setBounds(x, 100 + (50 * (i % 10)), 100,30);
-            label.setForeground(Color.RED);
-            label.setBackground(Color.BLUE);
-            label.setOpaque(true);
-            frame.add(label);
-            labels.add(label);
+            JButton b = new JButton(arrayNumbers[i] + "");
+            b.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getSource() == b) {
+                        if (Integer.parseInt(b.getText()) > 30) {
+                            JOptionPane.showMessageDialog(Visualizer.this,"Please enter the correct value!");
+                        } else {
+                            frame.setVisible(false);
+                            createFrame();
+                            createRandomArray(Integer.parseInt(b.getText()));
+                        }
+                    }
+                }
+            });
+            b.setBounds(x, 100 + (50 * (i % 10)), 100,30);
+            b.setForeground(Color.RED);
+            b.setBackground(Color.BLUE);
+            b.setOpaque(true);
+            frame.add(b);
+            buttons.add(b);
         }
-        return arrayNumbers;
+        int number = (int) (Math.random() * arrayLength);
+        arrayNumbers[number] = (int) (Math.random() * 29) + 1;
+        buttons.get(number).setText(arrayNumbers[number] + "");
+        frame.repaint();
     }
 
     public void quickSort(int[] arr, int from, int to) {
@@ -156,11 +173,11 @@ public class Visualizer extends JFrame implements ActionListener {
             quickSort(arr, divideIndex, to);
         } else {
             for (int i = from; i <= to; i++) {
-                labels.get(i).setBackground(Color.BLUE);
-                labels.get(i).setForeground(Color.white);
+                buttons.get(i).setBackground(Color.BLUE);
+                buttons.get(i).setForeground(Color.white);
             }
         }
-        if (labels.get(arrayNumbers.length - 1).getBackground() == Color.BLUE) {
+        if (buttons.get(arrayNumbers.length - 1).getBackground() == Color.BLUE) {
             reset.setEnabled(true);
             sort.setEnabled(true);
         }
@@ -170,51 +187,51 @@ public class Visualizer extends JFrame implements ActionListener {
         int rightIndex = to;
         int leftIndex = from;
         int pivot = arr[from + (to - from) / 2];
-        labels.get(from + (to - from) / 2).setBackground(Color.pink);
-        labels.get(from + (to - from) / 2).setBorder(new LineBorder(Color.pink));
+        buttons.get(from + (to - from) / 2).setBackground(Color.pink);
+        buttons.get(from + (to - from) / 2).setBorder(new LineBorder(Color.pink));
 
         while (leftIndex <= rightIndex) {
-            labels.get(rightIndex).setBorder(new LineBorder(Color.RED));
+            buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
 
             while (arr[leftIndex] < pivot) {
                 try {
-                    labels.get(leftIndex).setBorder(new LineBorder(Color.RED));
+                    buttons.get(leftIndex).setBorder(new LineBorder(Color.RED));
                     thread.sleep(1000 / speedSort);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                labels.get(leftIndex).setBorder(new LineBorder(Color.white));
+                buttons.get(leftIndex).setBorder(new LineBorder(Color.white));
                 leftIndex++;
             }
-            labels.get(leftIndex).setBorder(new LineBorder(Color.RED));
+            buttons.get(leftIndex).setBorder(new LineBorder(Color.RED));
 
             while (arr[rightIndex] > pivot) {
                 try {
-                    labels.get(rightIndex).setBorder(new LineBorder(Color.RED));
+                    buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
                     thread.sleep(1000 / speedSort);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                labels.get(rightIndex).setBorder(new LineBorder(Color.white));
+                buttons.get(rightIndex).setBorder(new LineBorder(Color.white));
                 rightIndex--;
             }
-            labels.get(rightIndex).setBorder(new LineBorder(Color.RED));
+            buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
 
             if (leftIndex <= rightIndex) {
                 swap(arr, rightIndex, leftIndex);
-                labels.get(leftIndex).setBorder(new LineBorder(Color.white));
-                labels.get(rightIndex).setBorder(new LineBorder(Color.white));
+                buttons.get(leftIndex).setBorder(new LineBorder(Color.white));
+                buttons.get(rightIndex).setBorder(new LineBorder(Color.white));
                 leftIndex++;
                 rightIndex--;
             }
         }
-        labels.get(from + (to - from) / 2).setBackground(Color.GREEN);
-        labels.get(from + (to - from) / 2).setBorder(new LineBorder(Color.GREEN));
+        buttons.get(from + (to - from) / 2).setBackground(Color.GREEN);
+        buttons.get(from + (to - from) / 2).setBorder(new LineBorder(Color.GREEN));
         if (leftIndex >= 0) {
-            labels.get(leftIndex).setBorder(new LineBorder(Color.white));
+            buttons.get(leftIndex).setBorder(new LineBorder(Color.white));
         }
         if (rightIndex >= 0) {
-            labels.get(rightIndex).setBorder(new LineBorder(Color.white));
+            buttons.get(rightIndex).setBorder(new LineBorder(Color.white));
         }
         return leftIndex;
     }
@@ -223,16 +240,16 @@ public class Visualizer extends JFrame implements ActionListener {
         int tmp = array[index1];
         array[index1] = array[index2];
         array[index2] = tmp;
-        labels.get(index1).setText(array[index1] + "");
-        labels.get(index2).setText(array[index2] + "");
-        labels.get(index1).setForeground(Color.red);
-        labels.get(index2).setForeground(Color.red);
+        buttons.get(index1).setText(array[index1] + "");
+        buttons.get(index2).setText(array[index2] + "");
+        buttons.get(index1).setForeground(Color.red);
+        buttons.get(index2).setForeground(Color.red);
         try {
             thread.sleep(1000 / speedSort);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        labels.get(index1).setForeground(Color.white);
-        labels.get(index2).setForeground(Color.white);
+        buttons.get(index1).setForeground(Color.white);
+        buttons.get(index2).setForeground(Color.white);
     }
 }
