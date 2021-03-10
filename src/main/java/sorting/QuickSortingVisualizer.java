@@ -1,14 +1,21 @@
 package sorting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-public class Visualizer extends JFrame implements ActionListener {
+/** A class for presenting quick sorting,
+ * which allows you to visually see how the quick sorting is implemented
+ */
+public class QuickSortingVisualizer extends JFrame implements ActionListener {
     private JFrame frame;
     private JLabel labelArrayLength;
     private JLabel labelSpeedSort;
@@ -22,7 +29,7 @@ public class Visualizer extends JFrame implements ActionListener {
     private int speedSort;
     private Thread thread;
 
-    Visualizer() {
+    QuickSortingVisualizer() {
         super("Write parameters");
         enter = new JButton("Enter");
         enter.setBounds(100,150,100, 30);
@@ -64,7 +71,7 @@ public class Visualizer extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new Visualizer();
+        new QuickSortingVisualizer();
     }
 
     @Override
@@ -79,7 +86,8 @@ public class Visualizer extends JFrame implements ActionListener {
                 createFrame();
                 createRandomArray(arrayLength);
             } catch (RuntimeException exception) {
-                JOptionPane.showMessageDialog(Visualizer.this,"Please enter the correct value!");
+                JOptionPane.showMessageDialog(QuickSortingVisualizer
+                        .this,"Please enter the correct value!");
             }
         }
         if (actionEvent.getSource() == sort) {
@@ -102,7 +110,8 @@ public class Visualizer extends JFrame implements ActionListener {
                 reset.setEnabled(false);
                 sort.setEnabled(false);
             } catch (RuntimeException exception) {
-                JOptionPane.showMessageDialog(Visualizer.this,"Please enter the correct value!");
+                JOptionPane.showMessageDialog(QuickSortingVisualizer
+                        .this,"Please enter the correct value!");
             }
         }
         if (actionEvent.getSource() == reset) {
@@ -125,6 +134,11 @@ public class Visualizer extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * A method that creates an array of the right size
+     * and creates a corresponding button for each element of the array
+     * @param arrayLength array length
+     */
     private void createRandomArray(int arrayLength) {
         arrayNumbers = new int[arrayLength];
         buttons = new ArrayList<>();
@@ -134,27 +148,28 @@ public class Visualizer extends JFrame implements ActionListener {
                 x = x + 120;
             }
             arrayNumbers[i] = (int) (Math.random() * 1000);
-            JButton b = new JButton(arrayNumbers[i] + "");
-            b.addActionListener(new ActionListener() {
+            JButton button = new JButton(arrayNumbers[i] + "");
+            button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (e.getSource() == b) {
-                        if (Integer.parseInt(b.getText()) > 30) {
-                            JOptionPane.showMessageDialog(Visualizer.this,"Please enter the correct value!");
+                    if (e.getSource() == button) {
+                        if (Integer.parseInt(button.getText()) > 30) {
+                            JOptionPane.showMessageDialog(QuickSortingVisualizer
+                                    .this,"Please enter the correct value!");
                         } else {
                             frame.setVisible(false);
                             createFrame();
-                            createRandomArray(Integer.parseInt(b.getText()));
+                            createRandomArray(Integer.parseInt(button.getText()));
                         }
                     }
                 }
             });
-            b.setBounds(x, 100 + (50 * (i % 10)), 100,30);
-            b.setForeground(Color.RED);
-            b.setBackground(Color.BLUE);
-            b.setOpaque(true);
-            frame.add(b);
-            buttons.add(b);
+            button.setBounds(x, 100 + (50 * (i % 10)), 100,30);
+            button.setForeground(Color.RED);
+            button.setBackground(Color.BLUE);
+            button.setOpaque(true);
+            frame.add(button);
+            buttons.add(button);
         }
         int number = (int) (Math.random() * arrayLength);
         arrayNumbers[number] = (int) (Math.random() * 29) + 1;
@@ -162,6 +177,12 @@ public class Visualizer extends JFrame implements ActionListener {
         frame.repaint();
     }
 
+    /**
+     * The main function that implements QuickSort
+     * @param arr Array to be sorted,
+     * @param from Starting index,
+     * @param to Ending index
+     */
     public void quickSort(int[] arr, int from, int to) {
 
         if (from < to) {
@@ -182,6 +203,17 @@ public class Visualizer extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * This function takes last element as pivot, places
+     * the pivot element at its correct position in sorted
+     * array, and places all smaller (smaller than pivot)
+     * to left of pivot and all greater elements to right
+     * of pivot
+     * @param arr Array to be sorted,
+     * @param from Starting index,
+     * @param to Ending index
+     * @return final sorted position pivot
+     */
     private int partition(int[] arr, int from, int to) {
         int rightIndex = to;
         int leftIndex = from;
@@ -235,6 +267,12 @@ public class Visualizer extends JFrame implements ActionListener {
         return leftIndex;
     }
 
+    /**
+     * This function swaps array elements
+     * @param array in which to rearrange the elements
+     * @param index1 first element which we will swaps
+     * @param index2 second element which we will swaps
+     */
     private void swap(int[] array, int index1, int index2) {
         int tmp = array[index1];
         array[index1] = array[index2];
