@@ -12,7 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-/** A class for presenting quick sorting,
+/**
+ * A class for presenting quick sorting,
  * which allows you to visually see how the quick sorting is implemented
  */
 public class QuickSortingVisualizer extends JFrame implements ActionListener {
@@ -122,6 +123,9 @@ public class QuickSortingVisualizer extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Method creates a form and adds buttons to control sorting
+     */
     private void createFrame() {
         frame = new JFrame();
         frame.setSize(1500,800);
@@ -135,9 +139,10 @@ public class QuickSortingVisualizer extends JFrame implements ActionListener {
     }
 
     /**
-     * A method that creates an array of the right size
+     * A method that creates an array of {@code arrayLength} size
      * and creates a corresponding button for each element of the array
-     * @param arrayLength array length
+     * @param arrayLength
+     *        array length
      */
     private void createRandomArray(int arrayLength) {
         arrayNumbers = new int[arrayLength];
@@ -178,10 +183,13 @@ public class QuickSortingVisualizer extends JFrame implements ActionListener {
     }
 
     /**
-     * The main function that implements QuickSort
-     * @param arr Array to be sorted,
-     * @param from Starting index,
-     * @param to Ending index
+     * The main method that implements QuickSort
+     * @param arr
+     *        Array to be sorted
+     * @param from
+     *        Starting index
+     * @param to
+     *        Ending index
      */
     public void quickSort(int[] arr, int from, int to) {
 
@@ -204,15 +212,19 @@ public class QuickSortingVisualizer extends JFrame implements ActionListener {
     }
 
     /**
-     * This function takes last element as pivot, places
+     * This  method takes last element as pivot, places
      * the pivot element at its correct position in sorted
      * array, and places all smaller (smaller than pivot)
      * to left of pivot and all greater elements to right
      * of pivot
-     * @param arr Array to be sorted,
-     * @param from Starting index,
-     * @param to Ending index
-     * @return final sorted position pivot
+     * @param arr
+     *        Array to be sorted
+     * @param from
+     *        Starting index
+     * @param to
+     *        Ending index
+     * @return
+     *        final sorted position pivot
      */
     private int partition(int[] arr, int from, int to) {
         int rightIndex = to;
@@ -268,10 +280,13 @@ public class QuickSortingVisualizer extends JFrame implements ActionListener {
     }
 
     /**
-     * This function swaps array elements
-     * @param array in which to rearrange the elements
-     * @param index1 first element which we will swaps
-     * @param index2 second element which we will swaps
+     * This  method swaps array elements
+     * @param array
+     *        in which to rearrange the elements
+     * @param index1
+     *        first element which we will swaps
+     * @param index2
+     *        second element which we will swaps
      */
     private void swap(int[] array, int index1, int index2) {
         int tmp = array[index1];
